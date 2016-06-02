@@ -11,6 +11,7 @@ type httpClient interface {
 type topicService interface {
 	getTopics() ([]topicLink, bool)
 	getTopicByUUID(uuid string) (topic, bool)
+	checkConnectivity() error
 }
 
 type topicServiceImpl struct {
@@ -50,6 +51,15 @@ func (s *topicServiceImpl) getTopics() ([]topicLink, bool) {
 func (s *topicServiceImpl) getTopicByUUID(uuid string) (topic, bool) {
 	topic, found := s.topicsMap[uuid]
 	return topic, found
+}
+
+func (s *topicServiceImpl) checkConnectivity() error {
+	// TODO: Can we just hit an endpoint to check if TME is available? Or do we need to make sure we get genre taxonmies back?
+	_, err := s.repository.getTopicsTaxonomy()
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (s *topicServiceImpl) initTopicsMap(terms []term) {

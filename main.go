@@ -4,6 +4,7 @@ import (
 	"fmt"
 	digest "github.com/FeNoMeNa/goha"
 	"github.com/Financial-Times/http-handlers-go/httphandlers"
+	status "github.com/Financial-Times/service-status-go/httphandlers"
 	log "github.com/Sirupsen/logrus"
 	"github.com/gorilla/mux"
 	"github.com/jawher/mow.cli"
@@ -65,8 +66,19 @@ func main() {
 		}
 		h := newTopicsHandler(s)
 		m := mux.NewRouter()
+
+		// The top one of these feels more correct, but the lower one matches what we have in Dropwizard,
+		// so it's what apps expect currently same as ping, the content of build-info needs more definition
+		//using http router here to be able to catch "/"
+		http.HandleFunc(status.PingPath, status.PingHandler)
+		http.HandleFunc(status.PingPathDW, status.PingHandler)
+		http.HandleFunc(status.BuildInfoPath, status.BuildInfoHandler)
+		http.HandleFunc(status.BuildInfoPathDW, status.BuildInfoHandler)
+		http.HandleFunc("/__gtg", h.GoodToGo)
+
 		m.HandleFunc("/transformers/topics", h.getTopics).Methods("GET")
 		m.HandleFunc("/transformers/topics/{uuid}", h.getTopicByUUID).Methods("GET")
+
 		http.Handle("/", m)
 
 		log.Printf("listening on %d", *port)

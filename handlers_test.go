@@ -11,7 +11,7 @@ import (
 
 const testUUID = "bba39990-c78d-3629-ae83-808c333c6dbc"
 const getTopicsResponse = "[{\"apiUrl\":\"http://localhost:8080/transformers/topics/bba39990-c78d-3629-ae83-808c333c6dbc\"}]\n"
-const getTopicByUUIDResponse = "{\"uuid\":\"bba39990-c78d-3629-ae83-808c333c6dbc\",\"canonicalName\":\"Metals Markets\",\"tmeIdentifier\":\"MTE3-U3ViamVjdHM=\",\"type\":\"Topic\"}\n"
+const getTopicByUUIDResponse = "{\"uuid\":\"bba39990-c78d-3629-ae83-808c333c6dbc\",\"alternativeIdentifiers\":{\"TME\":[\"MTE3-U3ViamVjdHM=\"],\"uuids\":[\"bba39990-c78d-3629-ae83-808c333c6dbc\"]},\"prefLabel\":\"Metals Markets\",\"type\":\"Topic\"}\n"
 
 func TestHandlers(t *testing.T) {
 	assert := assert.New(t)
@@ -23,7 +23,7 @@ func TestHandlers(t *testing.T) {
 		contentType  string // Contents of the Content-Type header
 		body         string
 	}{
-		{"Success - get topic by uuid", newRequest("GET", fmt.Sprintf("/transformers/topics/%s", testUUID)), &dummyService{found: true, topics: []topic{topic{UUID: testUUID, CanonicalName: "Metals Markets", TmeIdentifier: "MTE3-U3ViamVjdHM=", Type: "Topic"}}}, http.StatusOK, "application/json", getTopicByUUIDResponse},
+		{"Success - get topic by uuid", newRequest("GET", fmt.Sprintf("/transformers/topics/%s", testUUID)), &dummyService{found: true, topics: []topic{getDummyTopic(testUUID, "Metals Markets", "MTE3-U3ViamVjdHM=")}}, http.StatusOK, "application/json", getTopicByUUIDResponse},
 		{"Not found - get topic by uuid", newRequest("GET", fmt.Sprintf("/transformers/topics/%s", testUUID)), &dummyService{found: false, topics: []topic{topic{}}}, http.StatusNotFound, "application/json", ""},
 		{"Success - get topics", newRequest("GET", "/transformers/topics"), &dummyService{found: true, topics: []topic{topic{UUID: testUUID}}}, http.StatusOK, "application/json", getTopicsResponse},
 		{"Not found - get topics", newRequest("GET", "/transformers/topics"), &dummyService{found: false, topics: []topic{}}, http.StatusNotFound, "application/json", ""},

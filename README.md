@@ -8,7 +8,7 @@ The service exposes endpoints for getting all the topics and for getting topic b
 # Usage
 `go get github.com/Financial-Times/topics-transformer`
 
-`$GOPATH/bin/topics-transformer --port=8080 -base-url="http://localhost:8080/transformers/topics/" -structure-service-base-url="http://metadata.internal.ft.com:83" -structure-service-username="user" -structure-service-password="pass" -structure-service-principal-header="app-preditor"`
+`$GOPATH/bin/topics-transformer --port=8080 --base-url="http://localhost:8080/transformers/topics/" --structure-service-base-url="http://metadata.internal.ft.com:83" --structure-service-username="user" --structure-service-password="pass" --structure-service-principal-header="app-preditor"`
 ```
 export|set PORT=8080
 export|set BASE_URL="http://localhost:8080/transformers/topics/"

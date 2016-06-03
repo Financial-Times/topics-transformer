@@ -10,12 +10,12 @@ import (
 func TestGetTopics(t *testing.T) {
 	assert := assert.New(t)
 	tests := []struct {
-		name     string
-		baseURL  string
-		tax      taxonomy
-		topics []topicLink
-		found    bool
-		err      error
+		name    string
+		baseURL string
+		tax     taxonomy
+		topics  []topicLink
+		found   bool
+		err     error
 	}{
 		{"Success", "localhost:8080/transformers/topics/",
 			taxonomy{Terms: []term{term{CanonicalName: "Z_Archive", ID: "NWQxOTE4ZGQtOGY1OS00MWY3LTk0ZWEtOWYyOGNmMDg4ZGJk-VG9waWNz", Children: children{[]term{term{CanonicalName: "Africa Inc", ID: "YTcyNWI5YzItOTUwMy00ZWRkLWI0M2YtYzBjZjU5MWNjNTJi-VG9waWNz"}}}}}},
@@ -37,15 +37,15 @@ func TestGetTopics(t *testing.T) {
 func TestGetTopicByUuid(t *testing.T) {
 	assert := assert.New(t)
 	tests := []struct {
-		name    string
-		tax     taxonomy
-		uuid    string
+		name  string
+		tax   taxonomy
+		uuid  string
 		topic topic
-		found   bool
-		err     error
+		found bool
+		err   error
 	}{
 		{"Success", taxonomy{Terms: []term{term{CanonicalName: "Z_Archive", ID: "NWQxOTE4ZGQtOGY1OS00MWY3LTk0ZWEtOWYyOGNmMDg4ZGJk-VG9waWNz", Children: children{[]term{term{CanonicalName: "Africa Inc", ID: "YTcyNWI5YzItOTUwMy00ZWRkLWI0M2YtYzBjZjU5MWNjNTJi-VG9waWNz"}}}}}},
-			"e5360bf3-2068-3660-9a50-9c4d93b4bae1", topic{UUID: "e5360bf3-2068-3660-9a50-9c4d93b4bae1", CanonicalName: "Z_Archive", TmeIdentifier: "NWQxOTE4ZGQtOGY1OS00MWY3LTk0ZWEtOWYyOGNmMDg4ZGJk-VG9waWNz", Type: "Topic"}, true, nil},
+			"e5360bf3-2068-3660-9a50-9c4d93b4bae1", getDummyTopic("e5360bf3-2068-3660-9a50-9c4d93b4bae1", "Z_Archive", "NWQxOTE4ZGQtOGY1OS00MWY3LTk0ZWEtOWYyOGNmMDg4ZGJk-VG9waWNz"), true, nil},
 		{"Not found", taxonomy{Terms: []term{term{CanonicalName: "Z_Archive", ID: "NWQxOTE4ZGQtOGY1OS00MWY3LTk0ZWEtOWYyOGNmMDg4ZGJk-VG9waWNz", Children: children{[]term{term{CanonicalName: "Africa Inc", ID: "YTcyNWI5YzItOTUwMy00ZWRkLWI0M2YtYzBjZjU5MWNjNTJi-VG9waWNz"}}}}}},
 			"some uuid", topic{}, false, nil},
 		{"Error on init", taxonomy{}, "some uuid", topic{}, false, errors.New("Error getting taxonomy")},
@@ -64,6 +64,14 @@ func TestGetTopicByUuid(t *testing.T) {
 type dummyRepo struct {
 	tax taxonomy
 	err error
+}
+
+func getDummyTopic(uuid string, prefLabel string, tmeId string) topic {
+	return topic{
+		UUID:      uuid,
+		PrefLabel: prefLabel,
+		Type:      "Topic",
+		AlternativeIdentifiers: alternativeIdentifiers{TME: []string{tmeId}, Uuids: []string{uuid}}}
 }
 
 func (d *dummyRepo) getTopicsTaxonomy() (taxonomy, error) {

@@ -5,10 +5,12 @@ import (
 )
 
 func transformTopic(t term) topic {
+	uuid := uuid.NewMD5(uuid.UUID{}, []byte(t.ID)).String()
+
 	return topic{
-		UUID:          uuid.NewMD5(uuid.UUID{}, []byte(t.ID)).String(),
-		CanonicalName: t.CanonicalName,
-		TmeIdentifier: t.ID,
-		Type:          "Topic",
+		UUID:                   uuid,
+		PrefLabel:              t.CanonicalName,
+		AlternativeIdentifiers: alternativeIdentifiers{TME: []string{t.ID}, Uuids: []string{uuid}},
+		Type: "Topic",
 	}
 }

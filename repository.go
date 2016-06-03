@@ -22,7 +22,8 @@ func newTmeRepository(client httpClient, structureServiceBaseURL string, princip
 }
 
 func (t *tmeRepository) getTopicsTaxonomy() (taxonomy, error) {
-	req, err := http.NewRequest("GET", t.structureServiceBaseURL+"/metadata-services/structure/1.0/taxonomies/topics/terms?includeDisabledTerms=false", nil)
+	requestString := t.structureServiceBaseURL + "/metadata-services/structure/1.0/taxonomies/topics/terms?includeDisabledTerms=false"
+	req, err := http.NewRequest("GET", requestString, nil)
 	if err != nil {
 		return taxonomy{}, err
 	}
@@ -34,7 +35,7 @@ func (t *tmeRepository) getTopicsTaxonomy() (taxonomy, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return taxonomy{}, fmt.Errorf("Structure service returned %d", resp.StatusCode)
+		return taxonomy{}, fmt.Errorf("Structure service returned a %d http status code while connecting to %s", resp.StatusCode, requestString)
 	}
 
 	contents, err := ioutil.ReadAll(resp.Body)

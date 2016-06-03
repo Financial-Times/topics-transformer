@@ -28,7 +28,7 @@ func TestGetTopicsTaxonomy(t *testing.T) {
 			taxonomy{}, errors.New("Some error")},
 		{"Non 200 from structure service", repo(dummyClient{assert: assert, structureServiceBaseURL: "http://metadata.internal.ft.com:83", principalHeader: "someHeader",
 			resp: http.Response{StatusCode: http.StatusBadRequest, Body: ioutil.NopCloser(topicsXML)}}),
-			taxonomy{}, errors.New("Structure service returned 400")},
+			taxonomy{}, errors.New("Structure service returned a 400 http status code while connecting to http://metadata.internal.ft.com:83/metadata-services/structure/1.0/taxonomies/topics/terms?includeDisabledTerms=false")},
 		{"Unmarshalling error", repo(dummyClient{assert: assert, structureServiceBaseURL: "http://metadata.internal.ft.com:83", principalHeader: "someHeader",
 			resp: http.Response{StatusCode: http.StatusOK, Body: ioutil.NopCloser(bytes.NewReader([]byte("Non xml")))}}),
 			taxonomy{}, errors.New("EOF")},

@@ -54,7 +54,7 @@ func router(s topicService) *mux.Router {
 }
 
 type dummyService struct {
-	found    bool
+	found  bool
 	topics []topic
 }
 
@@ -68,4 +68,8 @@ func (s *dummyService) getTopics() ([]topicLink, bool) {
 
 func (s *dummyService) getTopicByUUID(uuid string) (topic, bool) {
 	return s.topics[0], s.found
+}
+
+func (s *dummyService) checkConnectivity() error {
+	return nil
 }

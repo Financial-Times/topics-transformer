@@ -54,7 +54,7 @@ func (s *topicServiceImpl) getTopicByUUID(uuid string) (topic, bool) {
 }
 
 func (s *topicServiceImpl) checkConnectivity() error {
-	// TODO: Can we just hit an endpoint to check if TME is available? Or do we need to make sure we get genre taxonmies back?
+	// TODO: Can we just hit an endpoint to check if TME is available? Or do we need to make sure we get genre taxonmies back? Maybe a healthcheck or gtg endpoint?
 	_, err := s.repository.getTopicsTaxonomy()
 	if err != nil {
 		return err

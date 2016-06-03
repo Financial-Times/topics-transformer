@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	digest "github.com/FeNoMeNa/goha"
+	"github.com/Financial-Times/go-fthealth/v1a"
 	"github.com/Financial-Times/http-handlers-go/httphandlers"
 	status "github.com/Financial-Times/service-status-go/httphandlers"
 	log "github.com/Sirupsen/logrus"
@@ -74,6 +75,7 @@ func main() {
 		http.HandleFunc(status.PingPathDW, status.PingHandler)
 		http.HandleFunc(status.BuildInfoPath, status.BuildInfoHandler)
 		http.HandleFunc(status.BuildInfoPathDW, status.BuildInfoHandler)
+		http.HandleFunc("/__health", v1a.Handler("Topics Transformer Healthchecks", "Checks for accessing the Structure service", h.HealthCheck()))
 		http.HandleFunc("/__gtg", h.GoodToGo)
 
 		m.HandleFunc("/transformers/topics", h.getTopics).Methods("GET")

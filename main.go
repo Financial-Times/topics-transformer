@@ -69,14 +69,13 @@ func main() {
 		m := mux.NewRouter()
 
 		// The top one of these feels more correct, but the lower one matches what we have in Dropwizard,
-		// so it's what apps expect currently same as ping, the content of build-info needs more definition
-		//using http router here to be able to catch "/"
-		http.HandleFunc(status.PingPath, status.PingHandler)
-		http.HandleFunc(status.PingPathDW, status.PingHandler)
-		http.HandleFunc(status.BuildInfoPath, status.BuildInfoHandler)
-		http.HandleFunc(status.BuildInfoPathDW, status.BuildInfoHandler)
-		http.HandleFunc("/__health", v1a.Handler("Topics Transformer Healthchecks", "Checks for accessing the Structure service", h.HealthCheck()))
-		http.HandleFunc("/__gtg", h.GoodToGo)
+		// so it's what apps expect currently same as ping
+		m.HandleFunc(status.PingPath, status.PingHandler)
+		m.HandleFunc(status.PingPathDW, status.PingHandler)
+		m.HandleFunc(status.BuildInfoPath, status.BuildInfoHandler)
+		m.HandleFunc(status.BuildInfoPathDW, status.BuildInfoHandler)
+		m.HandleFunc("/__health", v1a.Handler("Topics Transformer Healthchecks", "Checks for accessing the Structure service", h.HealthCheck()))
+		m.HandleFunc("/__gtg", h.GoodToGo)
 
 		m.HandleFunc("/transformers/topics", h.getTopics).Methods("GET")
 		m.HandleFunc("/transformers/topics/{uuid}", h.getTopicByUUID).Methods("GET")

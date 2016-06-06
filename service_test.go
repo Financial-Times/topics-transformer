@@ -12,20 +12,20 @@ func TestGetTopics(t *testing.T) {
 	tests := []struct {
 		name    string
 		baseURL string
-		tax     taxonomy
+		terms   []term
 		topics  []topicLink
 		found   bool
 		err     error
 	}{
 		{"Success", "localhost:8080/transformers/topics/",
-			taxonomy{Terms: []term{term{CanonicalName: "Z_Archive", RawID: "NWQxOTE4ZGQtOGY1OS00MWY3LTk0ZWEtOWYyOGNmMDg4ZGJk-VG9waWNz"},{term{CanonicalName: "Africa Inc", RawID: "YTcyNWI5YzItOTUwMy00ZWRkLWI0M2YtYzBjZjU5MWNjNTJi-VG9waWNz"}}}},
-			[]topicLink{topicLink{APIURL: "localhost:8080/transformers/topics/e5360bf3-2068-3660-9a50-9c4d93b4bae1"},
-				topicLink{APIURL: "localhost:8080/transformers/topics/c6c9c5f0-b5f6-3392-be0c-f82b6115c40b"}}, true, nil},
-		{"Error on init", "localhost:8080/transformers/topics/", taxonomy{}, []topicLink(nil), false, errors.New("Error getting taxonomy")},
+			[]term{term{CanonicalName: "Z_Archive", RawID: "845dc7d7-ae89-4fed-a819-9edcbb3fe507"}, term{CanonicalName: "Africa Inc", RawID: "Nstein_GL_AFTM_GL_164835"}},
+			[]topicLink{topicLink{APIURL: "localhost:8080/transformers/topics/81918290-8f91-3722-9ef3-aa9f31cf9e43"},
+				topicLink{APIURL: "localhost:8080/transformers/topics/0299feb1-7cb5-3ba2-865d-a2df7d670691"}}, true, nil},
+		{"Error on init", "localhost:8080/transformers/topics/", []term{}, []topicLink(nil), false, errors.New("Error getting taxonomy")},
 	}
 
 	for _, test := range tests {
-		repo := dummyRepo{tax: test.tax, err: test.err}
+		repo := dummyRepo{terms: test.terms, err: test.err}
 		service, err := newTopicService(&repo, test.baseURL, "Topics", 10000)
 		expectedTopics, found := service.getTopics()
 		assert.Equal(test.topics, expectedTopics, fmt.Sprintf("%s: Expected topics link incorrect", test.name))
@@ -38,22 +38,22 @@ func TestGetTopicByUuid(t *testing.T) {
 	assert := assert.New(t)
 	tests := []struct {
 		name  string
-		tax   taxonomy
+		terms []term
 		uuid  string
 		topic topic
 		found bool
 		err   error
 	}{
-		{"Success", taxonomy{Terms: []term{term{CanonicalName: "Z_Archive", RawID: "NWQxOTE4ZGQtOGY1OS00MWY3LTk0ZWEtOWYyOGNmMDg4ZGJk-VG9waWNz"}, term{CanonicalName: "Africa Inc", RawID: "YTcyNWI5YzItOTUwMy00ZWRkLWI0M2YtYzBjZjU5MWNjNTJi-VG9waWNz"}}},
-			"e5360bf3-2068-3660-9a50-9c4d93b4bae1", getDummyTopic("e5360bf3-2068-3660-9a50-9c4d93b4bae1", "Z_Archive", "NWQxOTE4ZGQtOGY1OS00MWY3LTk0ZWEtOWYyOGNmMDg4ZGJk-VG9waWNz"), true, nil},
-		{"Not found", taxonomy{Terms: []term{term{CanonicalName: "Z_Archive", RawID: "NWQxOTE4ZGQtOGY1OS00MWY3LTk0ZWEtOWYyOGNmMDg4ZGJk-VG9waWNz"}, term{CanonicalName: "Africa Inc", RawID: "YTcyNWI5YzItOTUwMy00ZWRkLWI0M2YtYzBjZjU5MWNjNTJi-VG9waWNz"}}},
+		{"Success", []term{term{CanonicalName: "Z_Archive", RawID: "845dc7d7-ae89-4fed-a819-9edcbb3fe507"}, term{CanonicalName: "Africa Inc", RawID: "Nstein_GL_AFTM_GL_164835"}},
+			"81918290-8f91-3722-9ef3-aa9f31cf9e43", getDummyTopic("81918290-8f91-3722-9ef3-aa9f31cf9e43", "Z_Archive", "ODQ1ZGM3ZDctYWU4OS00ZmVkLWE4MTktOWVkY2JiM2ZlNTA3-VG9waWNz"), true, nil},
+		{"Not found", []term{term{CanonicalName: "Z_Archive", RawID: "845dc7d7-ae89-4fed-a819-9edcbb3fe507"}, term{CanonicalName: "Africa Inc", RawID: "Nstein_GL_AFTM_GL_164835"}},
 			"some uuid", topic{}, false, nil},
-		{"Error on init", taxonomy{}, "some uuid", topic{}, false, errors.New("Error getting taxonomy")},
+		{"Error on init", []term{}, "some uuid", topic{}, false, errors.New("Error getting taxonomy")},
 	}
 
 	for _, test := range tests {
-		repo := dummyRepo{tax: test.tax, err: test.err}
-		service, err := newTopicService(&repo, "")
+		repo := dummyRepo{terms: test.terms, err: test.err}
+		service, err := newTopicService(&repo, "", "Topics", 10000)
 		expectedTopic, found := service.getTopicByUUID(test.uuid)
 		assert.Equal(test.topic, expectedTopic, fmt.Sprintf("%s: Expected topic incorrect", test.name))
 		assert.Equal(test.found, found)
@@ -62,8 +62,22 @@ func TestGetTopicByUuid(t *testing.T) {
 }
 
 type dummyRepo struct {
-	tax taxonomy
-	err error
+	terms []term
+	err   error
+}
+
+func (d *dummyRepo) GetTmeTermsFromIndex(startRecord int) ([]interface{}, error) {
+	if startRecord > 0 {
+		return nil, d.err
+	}
+	var interfaces []interface{} = make([]interface{}, len(d.terms))
+	for i, data := range d.terms {
+		interfaces[i] = data
+	}
+	return interfaces, d.err
+}
+func (d *dummyRepo) GetTmeTermById(uuid string) (interface{}, error) {
+	return d.terms[0], d.err
 }
 
 func getDummyTopic(uuid string, prefLabel string, tmeId string) topic {
@@ -72,8 +86,4 @@ func getDummyTopic(uuid string, prefLabel string, tmeId string) topic {
 		PrefLabel: prefLabel,
 		Type:      "Topic",
 		AlternativeIdentifiers: alternativeIdentifiers{TME: []string{tmeId}, Uuids: []string{uuid}}}
-}
-
-func (d *dummyRepo) getTopicsTaxonomy() (taxonomy, error) {
-	return d.tax, d.err
 }

@@ -37,7 +37,7 @@ func newTopicService(repo tmereader.Repository, baseURL string, taxonomyName str
 func (s *topicServiceImpl) init() error {
 	s.topicsMap = make(map[string]topic)
 	responseCount := 0
-	log.Printf("Fetching locations from TME\n")
+	log.Printf("Fetching topics from TME\n")
 	for {
 		terms, err := s.repository.GetTmeTermsFromIndex(responseCount)
 		if err != nil {
@@ -45,7 +45,7 @@ func (s *topicServiceImpl) init() error {
 		}
 
 		if len(terms) < 1 {
-			log.Printf("Finished fetching locations from TME\n")
+			log.Printf("Finished fetching topics from TME\n")
 			break
 		}
 		s.initTopicsMap(terms)

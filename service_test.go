@@ -18,7 +18,7 @@ func TestGetTopics(t *testing.T) {
 		err     error
 	}{
 		{"Success", "localhost:8080/transformers/topics/",
-			taxonomy{Terms: []term{term{CanonicalName: "Z_Archive", ID: "NWQxOTE4ZGQtOGY1OS00MWY3LTk0ZWEtOWYyOGNmMDg4ZGJk-VG9waWNz", Children: children{[]term{term{CanonicalName: "Africa Inc", ID: "YTcyNWI5YzItOTUwMy00ZWRkLWI0M2YtYzBjZjU5MWNjNTJi-VG9waWNz"}}}}}},
+			taxonomy{Terms: []term{term{CanonicalName: "Z_Archive", RawID: "NWQxOTE4ZGQtOGY1OS00MWY3LTk0ZWEtOWYyOGNmMDg4ZGJk-VG9waWNz"},{term{CanonicalName: "Africa Inc", RawID: "YTcyNWI5YzItOTUwMy00ZWRkLWI0M2YtYzBjZjU5MWNjNTJi-VG9waWNz"}}}},
 			[]topicLink{topicLink{APIURL: "localhost:8080/transformers/topics/e5360bf3-2068-3660-9a50-9c4d93b4bae1"},
 				topicLink{APIURL: "localhost:8080/transformers/topics/c6c9c5f0-b5f6-3392-be0c-f82b6115c40b"}}, true, nil},
 		{"Error on init", "localhost:8080/transformers/topics/", taxonomy{}, []topicLink(nil), false, errors.New("Error getting taxonomy")},
@@ -26,7 +26,7 @@ func TestGetTopics(t *testing.T) {
 
 	for _, test := range tests {
 		repo := dummyRepo{tax: test.tax, err: test.err}
-		service, err := newTopicService(&repo, test.baseURL)
+		service, err := newTopicService(&repo, test.baseURL, "Topics", 10000)
 		expectedTopics, found := service.getTopics()
 		assert.Equal(test.topics, expectedTopics, fmt.Sprintf("%s: Expected topics link incorrect", test.name))
 		assert.Equal(test.found, found)
@@ -44,9 +44,9 @@ func TestGetTopicByUuid(t *testing.T) {
 		found bool
 		err   error
 	}{
-		{"Success", taxonomy{Terms: []term{term{CanonicalName: "Z_Archive", ID: "NWQxOTE4ZGQtOGY1OS00MWY3LTk0ZWEtOWYyOGNmMDg4ZGJk-VG9waWNz", Children: children{[]term{term{CanonicalName: "Africa Inc", ID: "YTcyNWI5YzItOTUwMy00ZWRkLWI0M2YtYzBjZjU5MWNjNTJi-VG9waWNz"}}}}}},
+		{"Success", taxonomy{Terms: []term{term{CanonicalName: "Z_Archive", RawID: "NWQxOTE4ZGQtOGY1OS00MWY3LTk0ZWEtOWYyOGNmMDg4ZGJk-VG9waWNz"}, term{CanonicalName: "Africa Inc", RawID: "YTcyNWI5YzItOTUwMy00ZWRkLWI0M2YtYzBjZjU5MWNjNTJi-VG9waWNz"}}},
 			"e5360bf3-2068-3660-9a50-9c4d93b4bae1", getDummyTopic("e5360bf3-2068-3660-9a50-9c4d93b4bae1", "Z_Archive", "NWQxOTE4ZGQtOGY1OS00MWY3LTk0ZWEtOWYyOGNmMDg4ZGJk-VG9waWNz"), true, nil},
-		{"Not found", taxonomy{Terms: []term{term{CanonicalName: "Z_Archive", ID: "NWQxOTE4ZGQtOGY1OS00MWY3LTk0ZWEtOWYyOGNmMDg4ZGJk-VG9waWNz", Children: children{[]term{term{CanonicalName: "Africa Inc", ID: "YTcyNWI5YzItOTUwMy00ZWRkLWI0M2YtYzBjZjU5MWNjNTJi-VG9waWNz"}}}}}},
+		{"Not found", taxonomy{Terms: []term{term{CanonicalName: "Z_Archive", RawID: "NWQxOTE4ZGQtOGY1OS00MWY3LTk0ZWEtOWYyOGNmMDg4ZGJk-VG9waWNz"}, term{CanonicalName: "Africa Inc", RawID: "YTcyNWI5YzItOTUwMy00ZWRkLWI0M2YtYzBjZjU5MWNjNTJi-VG9waWNz"}}},
 			"some uuid", topic{}, false, nil},
 		{"Error on init", taxonomy{}, "some uuid", topic{}, false, errors.New("Error getting taxonomy")},
 	}

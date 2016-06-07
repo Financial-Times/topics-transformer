@@ -79,8 +79,7 @@ func main() {
 		client := getResilientClient()
 
 		mf := new(topicTransformer)
-
-		s, err := newTopicService(tmereader.NewTmeRepository(client, *tmeBaseURL, *username, *password, *token, *maxRecords, *slices, tmeTaxonomyName, tmereader.KnowledgeBases, mf), *baseURL, tmeTaxonomyName, *maxRecords)
+		s, err := newTopicService(tmereader.NewTmeRepository(client, *tmeBaseURL, *username, *password, *token, *maxRecords, *slices, tmeTaxonomyName, &tmereader.KnowledgeBases{}, mf), *baseURL, tmeTaxonomyName, *maxRecords)
 		if err != nil {
 			log.Errorf("Error while creating TopicsService: [%v]", err.Error())
 		}

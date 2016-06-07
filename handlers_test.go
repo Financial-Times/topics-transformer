@@ -6,12 +6,13 @@ import (
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 )
 
 const testUUID = "bba39990-c78d-3629-ae83-808c333c6dbc"
-const getTopicsResponse = "[{\"apiUrl\":\"http://localhost:8080/transformers/topics/bba39990-c78d-3629-ae83-808c333c6dbc\"}]\n"
-const getTopicByUUIDResponse = "{\"uuid\":\"bba39990-c78d-3629-ae83-808c333c6dbc\",\"alternativeIdentifiers\":{\"TME\":[\"MTE3-U3ViamVjdHM=\"],\"uuids\":[\"bba39990-c78d-3629-ae83-808c333c6dbc\"]},\"prefLabel\":\"Metals Markets\",\"type\":\"Topic\"}\n"
+const getTopicsResponse = `[{"apiUrl":"http://localhost:8080/transformers/topics/bba39990-c78d-3629-ae83-808c333c6dbc"}]`
+const getTopicByUUIDResponse = `{"uuid":"bba39990-c78d-3629-ae83-808c333c6dbc","alternativeIdentifiers":{"TME":["MTE3-U3ViamVjdHM="],"uuids":["bba39990-c78d-3629-ae83-808c333c6dbc"]},"prefLabel":"Metals Markets","type":"Topic"}`
 
 func TestHandlers(t *testing.T) {
 	assert := assert.New(t)
@@ -33,7 +34,7 @@ func TestHandlers(t *testing.T) {
 		rec := httptest.NewRecorder()
 		router(test.dummyService).ServeHTTP(rec, test.req)
 		assert.True(test.statusCode == rec.Code, fmt.Sprintf("%s: Wrong response code, was %d, should be %d", test.name, rec.Code, test.statusCode))
-		assert.Equal(test.body, rec.Body.String(), fmt.Sprintf("%s: Wrong body", test.name))
+		assert.Equal(strings.TrimSpace(test.body), strings.TrimSpace(rec.Body.String()), fmt.Sprintf("%s: Wrong body", test.name))
 	}
 }
 

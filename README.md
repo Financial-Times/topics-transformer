@@ -30,7 +30,7 @@ With Docker:
 #Usuage
 
 Get all topics:
-`curl -X GET -H "Cache-Control: no-cache" -H "Postman-Token: 4f5f5bec-91ae-d714-3fb5-49b6e09a5a1b" "http://semantic-up.ft.com/__topics_transformer/transformers/topics/"`
+`curl -X GET -H "Cache-Control: no-cache" -H "Postman-Token: 4f5f5bec-91ae-d714-3fb5-49b6e09a5a1b" "http://semantic-up.ft.com/__topics_transformer/transformers/topics"`
 
 Get by topic:
 `curl -X GET -H "Cache-Control: no-cache" -H "Postman-Token: 4f5f5bec-91ae-d714-3fb5-49b6e09a5a1b" "http://semantic-up.ft.com/__topics_transformer/transformers/topics/213925ea-c373-3e0f-9a6d-4aba2f644ab2"`

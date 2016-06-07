@@ -16,11 +16,11 @@ type topicsHandler struct {
 // HealthCheck does something
 func (h *topicsHandler) HealthCheck() v1a.Check {
 	return v1a.Check{
-		BusinessImpact:   "Unable to respond to request for the topicc data from Structure service",
-		Name:             "Check connectivity to the Structure service",
+		BusinessImpact:   "Unable to respond to request for the topic data from TME",
+		Name:             "Check connectivity to TME",
 		PanicGuide:       "https://sites.google.com/a/ft.com/ft-technology-service-transition/home/run-book-library/topics-transfomer",
 		Severity:         1,
-		TechnicalSummary: "Cannot connect to Structure service to be able to supply topics",
+		TechnicalSummary: "Cannot connect to TME to be able to supply topics",
 		Checker:          h.checker,
 	}
 }
@@ -29,9 +29,9 @@ func (h *topicsHandler) HealthCheck() v1a.Check {
 func (h *topicsHandler) checker() (string, error) {
 	err := h.service.checkConnectivity()
 	if err == nil {
-		return "Connectivity to the Structure service is ok", err
+		return "Connectivity to TME is ok", err
 	}
-	return "Error connecting to Structure service", err
+	return "Error connecting to TME", err
 }
 
 func newTopicsHandler(service topicService) topicsHandler {

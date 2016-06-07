@@ -93,7 +93,7 @@ func main() {
 		m.HandleFunc(status.PingPathDW, status.PingHandler)
 		m.HandleFunc(status.BuildInfoPath, status.BuildInfoHandler)
 		m.HandleFunc(status.BuildInfoPathDW, status.BuildInfoHandler)
-		m.HandleFunc("/__health", v1a.Handler("Topics Transformer Healthchecks", "Checks for accessing the Structure service", h.HealthCheck()))
+		m.HandleFunc("/__health", v1a.Handler("Topics Transformer Healthchecks", "Checks for accessing TME", h.HealthCheck()))
 		m.HandleFunc("/__gtg", h.GoodToGo)
 
 		m.HandleFunc("/transformers/topics", h.getTopics).Methods("GET")

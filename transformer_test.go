@@ -15,7 +15,7 @@ func TestTransform(t *testing.T) {
 	}{
 		{"Transform term to topic", term{
 			CanonicalName: "Africa Inc",
-			RawID:            "Nstein_GL_AFTM_GL_164835"},
+			RawID:         "Nstein_GL_AFTM_GL_164835"},
 			topic{
 				UUID:      "0299feb1-7cb5-3ba2-865d-a2df7d670691",
 				PrefLabel: "Africa Inc",

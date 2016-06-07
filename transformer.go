@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/pborman/uuid"
 	"encoding/base64"
 	"encoding/xml"
+	"github.com/pborman/uuid"
 )
 
 func transformTopic(tmeTerm term, taxonomyName string) topic {

@@ -1,9 +1,9 @@
 package main
 
 import (
-	"net/http"
 	"github.com/Financial-Times/tme-reader/tmereader"
 	log "github.com/Sirupsen/logrus"
+	"net/http"
 )
 
 type httpClient interface {
@@ -17,10 +17,10 @@ type topicService interface {
 }
 
 type topicServiceImpl struct {
-	repository tmereader.Repository
-	baseURL    string
-	topicsMap  map[string]topic
-	topicLinks []topicLink
+	repository    tmereader.Repository
+	baseURL       string
+	topicsMap     map[string]topic
+	topicLinks    []topicLink
 	taxonomyName  string
 	maxTmeRecords int
 }
@@ -70,10 +70,10 @@ func (s *topicServiceImpl) getTopicByUUID(uuid string) (topic, bool) {
 
 func (s *topicServiceImpl) checkConnectivity() error {
 	// TODO: Can we just hit an endpoint to check if TME is available? Or do we need to make sure we get genre taxonmies back? Maybe a healthcheck or gtg endpoint?
-	//_, err := s.repository.getTopicsTaxonomy()
-	//if err != nil {
-	//	return err
-	//}
+	_, err := s.repository.GetTmeTermsFromIndex(1)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

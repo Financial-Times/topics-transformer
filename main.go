@@ -39,7 +39,7 @@ func main() {
 	token := app.String(cli.StringOpt{
 		Name:   "token",
 		Value:  "",
-		Desc:   "Token to be used for accessig TME",
+		Desc:   "Token to be used for accessing TME",
 		EnvVar: "TOKEN",
 	})
 	baseURL := app.String(cli.StringOpt{

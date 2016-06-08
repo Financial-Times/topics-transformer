@@ -70,7 +70,7 @@ func (s *topicServiceImpl) getTopicByUUID(uuid string) (topic, bool) {
 
 func (s *topicServiceImpl) checkConnectivity() error {
 	// TODO: Can we just hit an endpoint to check if TME is available? Or do we need to make sure we get genre taxonmies back? Maybe a healthcheck or gtg endpoint?
-	// TODO: Can we use
+	// TODO: Can we use a count from our responses while actually in use to trigger a healthcheck?
 	//	_, err := s.repository.GetTmeTermsFromIndex(1)
 	//	if err != nil {
 	//		return err

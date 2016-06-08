@@ -1,6 +1,8 @@
 package main
 
 import (
+	"github.com/Financial-Times/tme-reader/tmereader"
+	log "github.com/Sirupsen/logrus"
 	"net/http"
 )
 
@@ -11,18 +13,20 @@ type httpClient interface {
 type topicService interface {
 	getTopics() ([]topicLink, bool)
 	getTopicByUUID(uuid string) (topic, bool)
+	checkConnectivity() error
 }
 
 type topicServiceImpl struct {
-	repository repository
-	baseURL    string
-	topicsMap  map[string]topic
-	topicLinks []topicLink
+	repository    tmereader.Repository
+	baseURL       string
+	topicsMap     map[string]topic
+	topicLinks    []topicLink
+	taxonomyName  string
+	maxTmeRecords int
 }
 
-func newTopicService(repo repository, baseURL string) (topicService, error) {
-
-	s := &topicServiceImpl{repository: repo, baseURL: baseURL}
+func newTopicService(repo tmereader.Repository, baseURL string, taxonomyName string, maxTmeRecords int) (topicService, error) {
+	s := &topicServiceImpl{repository: repo, baseURL: baseURL, taxonomyName: taxonomyName, maxTmeRecords: maxTmeRecords}
 	err := s.init()
 	if err != nil {
 		return &topicServiceImpl{}, err
@@ -32,11 +36,23 @@ func newTopicService(repo repository, baseURL string) (topicService, error) {
 
 func (s *topicServiceImpl) init() error {
 	s.topicsMap = make(map[string]topic)
-	tax, err := s.repository.getTopicsTaxonomy()
-	if err != nil {
-		return err
+	responseCount := 0
+	log.Printf("Fetching topics from TME\n")
+	for {
+		terms, err := s.repository.GetTmeTermsFromIndex(responseCount)
+		if err != nil {
+			return err
+		}
+
+		if len(terms) < 1 {
+			log.Printf("Finished fetching topics from TME\n")
+			break
+		}
+		s.initTopicsMap(terms)
+		responseCount += s.maxTmeRecords
 	}
-	s.initTopicsMap(tax.Terms)
+	log.Printf("Added %d topic links\n", len(s.topicLinks))
+
 	return nil
 }
 
@@ -52,11 +68,21 @@ func (s *topicServiceImpl) getTopicByUUID(uuid string) (topic, bool) {
 	return topic, found
 }
 
-func (s *topicServiceImpl) initTopicsMap(terms []term) {
-	for _, t := range terms {
-		top := transformTopic(t)
+func (s *topicServiceImpl) checkConnectivity() error {
+	// TODO: Can we just hit an endpoint to check if TME is available? Or do we need to make sure we get genre taxonmies back? Maybe a healthcheck or gtg endpoint?
+	// TODO: Can we use a count from our responses while actually in use to trigger a healthcheck?
+	//	_, err := s.repository.GetTmeTermsFromIndex(1)
+	//	if err != nil {
+	//		return err
+	//	}
+	return nil
+}
+
+func (s *topicServiceImpl) initTopicsMap(terms []interface{}) {
+	for _, iTerm := range terms {
+		t := iTerm.(term)
+		top := transformTopic(t, s.taxonomyName)
 		s.topicsMap[top.UUID] = top
 		s.topicLinks = append(s.topicLinks, topicLink{APIURL: s.baseURL + top.UUID})
-		s.initTopicsMap(t.Children.Terms)
 	}
 }

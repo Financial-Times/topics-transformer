@@ -9,15 +9,25 @@ import (
 func TestTransform(t *testing.T) {
 	assert := assert.New(t)
 	tests := []struct {
-		name    string
-		term    term
+		name  string
+		term  term
 		topic topic
 	}{
-		{"Trasform term to topic", term{CanonicalName: "Africa Inc", ID: "YTcyNWI5YzItOTUwMy00ZWRkLWI0M2YtYzBjZjU5MWNjNTJi-VG9waWNz"}, topic{UUID: "c6c9c5f0-b5f6-3392-be0c-f82b6115c40b", CanonicalName: "Africa Inc", TmeIdentifier: "YTcyNWI5YzItOTUwMy00ZWRkLWI0M2YtYzBjZjU5MWNjNTJi-VG9waWNz", Type: "Topic"}},
+		{"Transform term to topic", term{
+			CanonicalName: "Africa Inc",
+			RawID:         "Nstein_GL_AFTM_GL_164835"},
+			topic{
+				UUID:      "0299feb1-7cb5-3ba2-865d-a2df7d670691",
+				PrefLabel: "Africa Inc",
+				AlternativeIdentifiers: alternativeIdentifiers{
+					TME:   []string{"TnN0ZWluX0dMX0FGVE1fR0xfMTY0ODM1-VG9waWNz"},
+					Uuids: []string{"0299feb1-7cb5-3ba2-865d-a2df7d670691"},
+				},
+				Type: "Topic"}},
 	}
 
 	for _, test := range tests {
-		expectedTopic := transformTopic(test.term)
+		expectedTopic := transformTopic(test.term, "Topics")
 		assert.Equal(test.topic, expectedTopic, fmt.Sprintf("%s: Expected topic incorrect", test.name))
 	}
 

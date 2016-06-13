@@ -73,6 +73,7 @@ func main() {
 		EnvVar: "SLICES",
 	})
 
+	// This MUST be the same as defined in TME otherwise the UUID generated will be different
 	tmeTaxonomyName := "Topics"
 
 	app.Action = func() {

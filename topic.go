@@ -8,10 +8,8 @@ type topic struct {
 }
 
 type alternativeIdentifiers struct {
-	TME               []string `json:"TME,omitempty"`
-	FactsetIdentifier string   `json:"factsetIdentifier,omitempty"`
-	LeiCode           string   `json:"leiCode,omitempty"`
-	Uuids             []string `json:"uuids,omitempty"`
+	TME   []string `json:"TME,omitempty"`
+	Uuids []string `json:"uuids,omitempty"`
 }
 
 type topicLink struct {

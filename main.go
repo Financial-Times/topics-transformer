@@ -73,7 +73,8 @@ func main() {
 		EnvVar: "SLICES",
 	})
 
-	tmeTaxonomyName := "topics"
+	// This MUST be the same as defined in TME otherwise the UUID generated will be different
+	tmeTaxonomyName := "Topics"
 
 	app.Action = func() {
 		client := getResilientClient()

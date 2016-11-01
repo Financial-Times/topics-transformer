@@ -3,10 +3,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"strconv"
+
 	"github.com/Financial-Times/go-fthealth/v1a"
 	log "github.com/Sirupsen/logrus"
 	"github.com/gorilla/mux"
-	"net/http"
 )
 
 type topicsHandler struct {
@@ -77,4 +79,34 @@ func writeJSONResponse(obj interface{}, found bool, writer http.ResponseWriter) 
 func writeJSONError(w http.ResponseWriter, errorMsg string, statusCode int) {
 	w.WriteHeader(statusCode)
 	fmt.Fprintln(w, fmt.Sprintf("{\"message\": \"%s\"}", errorMsg))
+}
+
+func (h *topicsHandler) getCount(writer http.ResponseWriter, req *http.Request) {
+	count := h.service.getTopicCount()
+	_, err := writer.Write([]byte(strconv.Itoa(count)))
+	if err != nil {
+		log.Warnf("Couldn't write count to HTTP response. count=%d %v\n", count, err)
+		writer.WriteHeader(http.StatusInternalServerError)
+	}
+}
+
+func (h *topicsHandler) getIds(writer http.ResponseWriter, req *http.Request) {
+	ids := h.service.getTopicIds()
+	writer.Header().Add("Content-Type", "text/plain")
+	if len(ids) == 0 {
+		writer.WriteHeader(http.StatusOK)
+		return
+	}
+	enc := json.NewEncoder(writer)
+	type topicID struct {
+		ID string `json:"id"`
+	}
+	for _, id := range ids {
+		rID := topicID{ID: id}
+		err := enc.Encode(rID)
+		if err != nil {
+			log.Warnf("Couldn't encode to HTTP response topic with uuid=%s %v\n", id, err)
+			continue
+		}
+	}
 }

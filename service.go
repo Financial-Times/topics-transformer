@@ -1,9 +1,10 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/Financial-Times/tme-reader/tmereader"
 	log "github.com/Sirupsen/logrus"
-	"net/http"
 )
 
 type httpClient interface {
@@ -14,6 +15,8 @@ type topicService interface {
 	getTopics() ([]topicLink, bool)
 	getTopicByUUID(uuid string) (topic, bool)
 	checkConnectivity() error
+	getTopicCount() int
+	getTopicIds() []string
 }
 
 type topicServiceImpl struct {
@@ -85,4 +88,19 @@ func (s *topicServiceImpl) initTopicsMap(terms []interface{}) {
 		s.topicsMap[top.UUID] = top
 		s.topicLinks = append(s.topicLinks, topicLink{APIURL: s.baseURL + top.UUID})
 	}
+}
+
+func (s *topicServiceImpl) getTopicCount() int {
+	return len(s.topicLinks)
+}
+
+func (s *topicServiceImpl) getTopicIds() []string {
+	i := 0
+	keys := make([]string, len(s.topicsMap))
+
+	for k := range s.topicsMap {
+		keys[i] = k
+		i++
+	}
+	return keys
 }

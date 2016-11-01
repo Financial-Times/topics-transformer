@@ -3,6 +3,11 @@ package main
 import (
 	"crypto/tls"
 	"fmt"
+	"net"
+	"net/http"
+	"os"
+	"time"
+
 	"github.com/Financial-Times/go-fthealth/v1a"
 	"github.com/Financial-Times/http-handlers-go/httphandlers"
 	status "github.com/Financial-Times/service-status-go/httphandlers"
@@ -12,10 +17,6 @@ import (
 	"github.com/jawher/mow.cli"
 	"github.com/rcrowley/go-metrics"
 	"github.com/sethgrid/pester"
-	"net"
-	"net/http"
-	"os"
-	"time"
 )
 
 func init() {
@@ -98,6 +99,8 @@ func main() {
 		m.HandleFunc("/__gtg", h.GoodToGo)
 
 		m.HandleFunc("/transformers/topics", h.getTopics).Methods("GET")
+		m.HandleFunc("/transformers/topics/__count", h.getCount).Methods("GET")
+		m.HandleFunc("/transformers/topics/__ids", h.getIds).Methods("GET")
 		m.HandleFunc("/transformers/topics/{uuid}", h.getTopicByUUID).Methods("GET")
 
 		http.Handle("/", m)

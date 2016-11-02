@@ -57,6 +57,7 @@ func router(s topicService) *mux.Router {
 	m.HandleFunc("/transformers/topics", h.getTopics).Methods("GET")
 	m.HandleFunc("/transformers/topics/__count", h.getCount).Methods("GET")
 	m.HandleFunc("/transformers/topics/__ids", h.getIds).Methods("GET")
+	m.HandleFunc("/transformers/topics/__reload", h.getIds).Methods("GET")
 	m.HandleFunc("/transformers/topics/{uuid}", h.getTopicByUUID).Methods("GET")
 
 	return m
@@ -96,4 +97,8 @@ func (s *dummyService) getTopicIds() []string {
 		i++
 	}
 	return keys
+}
+
+func (s *dummyService) reload() error {
+	return nil
 }

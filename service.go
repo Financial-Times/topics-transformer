@@ -17,6 +17,7 @@ type topicService interface {
 	checkConnectivity() error
 	getTopicCount() int
 	getTopicIds() []string
+	reload() error
 }
 
 type topicServiceImpl struct {
@@ -30,17 +31,17 @@ type topicServiceImpl struct {
 
 func newTopicService(repo tmereader.Repository, baseURL string, taxonomyName string, maxTmeRecords int) (topicService, error) {
 	s := &topicServiceImpl{repository: repo, baseURL: baseURL, taxonomyName: taxonomyName, maxTmeRecords: maxTmeRecords}
-	err := s.init()
+	err := s.reload()
 	if err != nil {
 		return &topicServiceImpl{}, err
 	}
 	return s, nil
 }
 
-func (s *topicServiceImpl) init() error {
+func (s *topicServiceImpl) reload() error {
 	s.topicsMap = make(map[string]topic)
 	responseCount := 0
-	log.Printf("Fetching topics from TME\n")
+	log.Println("Fetching topics from TME")
 	for {
 		terms, err := s.repository.GetTmeTermsFromIndex(responseCount)
 		if err != nil {
@@ -48,7 +49,7 @@ func (s *topicServiceImpl) init() error {
 		}
 
 		if len(terms) < 1 {
-			log.Printf("Finished fetching topics from TME\n")
+			log.Println("Finished fetching topics from TME")
 			break
 		}
 		s.initTopicsMap(terms)

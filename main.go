@@ -101,6 +101,7 @@ func main() {
 		m.HandleFunc("/transformers/topics", h.getTopics).Methods("GET")
 		m.HandleFunc("/transformers/topics/__count", h.getCount).Methods("GET")
 		m.HandleFunc("/transformers/topics/__ids", h.getIds).Methods("GET")
+		m.HandleFunc("/transformers/topics/__reload", h.reload).Methods("GET")
 		m.HandleFunc("/transformers/topics/{uuid}", h.getTopicByUUID).Methods("GET")
 
 		http.Handle("/", m)

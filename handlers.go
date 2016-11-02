@@ -110,3 +110,11 @@ func (h *topicsHandler) getIds(writer http.ResponseWriter, req *http.Request) {
 		}
 	}
 }
+
+func (h *topicsHandler) reload(writer http.ResponseWriter, req *http.Request) {
+	err := h.service.reload()
+	if err != nil {
+		log.Warnf("Problem reloading terms from TME: %v", err)
+		writer.WriteHeader(http.StatusInternalServerError)
+	}
+}

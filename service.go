@@ -40,6 +40,8 @@ func newTopicService(repo tmereader.Repository, baseURL string, taxonomyName str
 
 func (s *topicServiceImpl) reload() error {
 	s.topicsMap = make(map[string]topic)
+	var links []topicLink
+	s.topicLinks = links
 	responseCount := 0
 	log.Println("Fetching topics from TME")
 	for {

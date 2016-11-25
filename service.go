@@ -1,15 +1,9 @@
 package main
 
 import (
-	"net/http"
-
 	"github.com/Financial-Times/tme-reader/tmereader"
 	log "github.com/Sirupsen/logrus"
 )
-
-type httpClient interface {
-	Do(req *http.Request) (resp *http.Response, err error)
-}
 
 type topicService interface {
 	getTopics() ([]topicLink, bool)

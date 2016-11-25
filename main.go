@@ -125,7 +125,7 @@ func getResilientClient() *pester.Client {
 	}
 	c := &http.Client{
 		Transport: tr,
-		Timeout:   time.Duration(30 * time.Second),
+		Timeout:   30 * time.Second,
 	}
 	client := pester.NewExtendedClient(c)
 	client.Backoff = pester.ExponentialBackoff

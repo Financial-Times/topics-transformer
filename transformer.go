@@ -15,7 +15,8 @@ func transformTopic(tmeTerm term, taxonomyName string) topic {
 		UUID:                   uuid,
 		PrefLabel:              tmeTerm.CanonicalName,
 		AlternativeIdentifiers: alternativeIdentifiers{TME: []string{tmeIdentifier}, Uuids: []string{uuid}},
-		Type: "Topic",
+		PrimaryType:            primaryType,
+		TypeHierarchy:          topicTypes,
 	}
 }
 

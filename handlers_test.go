@@ -13,7 +13,7 @@ import (
 
 const testUUID = "bba39990-c78d-3629-ae83-808c333c6dbc"
 const getTopicsResponse = `[{"apiUrl":"http://localhost:8080/transformers/topics/bba39990-c78d-3629-ae83-808c333c6dbc"}]`
-const getTopicByUUIDResponse = `{"uuid":"bba39990-c78d-3629-ae83-808c333c6dbc","alternativeIdentifiers":{"TME":["MTE3-U3ViamVjdHM="],"uuids":["bba39990-c78d-3629-ae83-808c333c6dbc"]},"prefLabel":"Metals Markets","type":"Topic"}`
+const getTopicByUUIDResponse = `{"uuid":"bba39990-c78d-3629-ae83-808c333c6dbc","alternativeIdentifiers":{"TME":["MTE3-U3ViamVjdHM="],"uuids":["bba39990-c78d-3629-ae83-808c333c6dbc"]},"prefLabel":"Metals Markets","type":"Topic","types":["Thing","Concept","Topic"]}`
 const getTopicsCountResponse = `1`
 const getTopicsIdsResponse = `{"id":"bba39990-c78d-3629-ae83-808c333c6dbc"}`
 

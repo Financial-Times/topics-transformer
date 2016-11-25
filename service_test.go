@@ -83,8 +83,9 @@ func (d *dummyRepo) GetTmeTermById(uuid string) (interface{}, error) {
 
 func getDummyTopic(uuid string, prefLabel string, tmeId string) topic {
 	return topic{
-		UUID:      uuid,
-		PrefLabel: prefLabel,
-		Type:      "Topic",
+		UUID:                   uuid,
+		PrefLabel:              prefLabel,
+		PrimaryType:            primaryType,
+		TypeHierarchy:          topicTypes,
 		AlternativeIdentifiers: alternativeIdentifiers{TME: []string{tmeId}, Uuids: []string{uuid}}}
 }
